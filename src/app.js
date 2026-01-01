@@ -11,15 +11,24 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(morgan('dev'));
-app.use(cors());
 //routes
 const indexRoutes = require('./routes/index');
 const searchPlatFormRoutes = require('./routes/searchPlatForm.route');
+const authRoutes = require('./routes/auth.route');
+const { connectDB } = require('./config/database');
+const cookieParser = require("cookie-parser");
 app.use(express.json());
+app.use(cookieParser());
+app.use(cors({
+    origin: "http://localhost:3000", 
+    credentials: true
+  }));
 app.use(express.urlencoded({ extended: true }));
+connectDB()
 
 app.use("/", indexRoutes);
 app.use("/search", searchPlatFormRoutes);
+app.use("/api/auth", authRoutes);
 
 //error middleware
 app.use(errorMiddleare);
